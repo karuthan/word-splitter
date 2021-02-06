@@ -1,0 +1,36 @@
+<button class='highlightButton'>Highlight</button>
+
+<textarea id="inputText" name="inputText" rows="5" cols="50">
+
+</textarea>
+$(document).ready(function () {
+    var i,
+    timerId,
+    speed = 100, //speed in ms
+    higlightWord = function (text, index) {
+        var words = text.match(/\w+/g);
+        if (index >= words.length) {
+            return text;
+        }
+        words.splice(index, 0, "<span class='highlight'>");
+        words.splice(index + 2, 0, "</span>");
+        return words.join(' ');
+    };
+    $('.highlightButton').bind('click', function () {
+        $inputText = $('#inputText');
+        i = 0;
+        if (timerId) {
+            clearInterval(timerId);
+        }
+        timerId = setInterval(function () {
+            var sentence = higlightWord($inputText.text(), i);
+
+            if (sentence !== $inputText.text()) {
+                i += 1;
+            } else {
+                clearInterval(timerId);
+            }
+            $inputText.html(sentence);
+        }, speed);
+    });
+});
