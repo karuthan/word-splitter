@@ -1,31 +1,59 @@
-<button class='highlightButton'>Highlight</button>
+<!DOCTYPE html>
+<html>
+ <style>
+.highlight {
+  background-color: yellow;
+}
+</style>
+<body>
+ <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous">
+  </script>
+  <script src="https://unpkg.com/xregexp/xregexp-all.js"></script>
+    
+ <button class='highlightButton'>Highlight</button>
+ <textarea id="inputData" name="inputData" rows="5" cols="50">
+மனதிலுறுதி வேண்டும், வாக்கினி லேயினிமை வேண்டும்; நினைவு நல்லது வேண்டும், நெருங்கின பொருள் கைப்பட வேண்டும்; கனவு மெய்ப்பட வேண்டும், கைவசமாவது விரைவில் வேண்டும்; தனமும் இன்பமும் வேண்டும், தரணியிலே பெருமை வேண்டும். கண் திறந்திட வேண்டும், காரியத்தி லுறுதி வேண்டும்; பெண் விடுதலை வேண்டும், பெரிய கடவுள் காக்க வேண்டும், மண் பயனுற வேண்டும், வானகமிங்கு தென்பட வேண்டும்; உண்மை நின்றிட வேண்டும். ஓம் ஓம் ஓம் ஓம்
+ </textarea>
 
-<textarea id="inputText" name="inputText" rows="5" cols="50">
+ <div id="inputText" name="inputText" rows="5" cols="50">
 
-</textarea>
+</div>
 <script>
+XRegExp.install('namespacing');
 $(document).ready(function () {
     var i,
     timerId,
-    speed = 100, //speed in ms
-    higlightWord = function (text, index) {
-        var words = text.match(/\w+/g);
-        if (index >= words.length) {
-            return text;
-        }
-        words.splice(index, 0, "<span class='highlight'>");
-        words.splice(index + 2, 0, "</span>");
-        return words.join(' ');
+    speed = 1000, //speed in ms
+    higlightWord = function (text, nthOccurence) {
+    var pos = 0, words = [], match;
+    var wordCount = 0;
+    while (match = XRegExp.exec(text, XRegExp('([\u0B02-\u0BCD])+'), pos, false)) {
+	//while (match = XRegExp.exec(text, XRegExp('(/\p{L}/\p{M}])+'), pos, false)) {
+      wordCount++
+      if(wordCount == nthOccurence){
+        words.push("<span class='highlight'>" + match[0] + "</span>" );
+      }
+      else {
+        words.push(match[0]);
+      }
+      pos = match.index + match[0].length;      
+     }
+	 console.log(words);
+     return words.join(' ');
     };
+	
     $('.highlightButton').bind('click', function () {
+    $inputData = $('#inputData');  
+    $('#inputText').text($inputData.val());    
         $inputText = $('#inputText');
-        i = 0;
+        i = 1;
         if (timerId) {
-            clearInterval(timerId);
+          clearInterval(timerId);
         }
+    
         timerId = setInterval(function () {
-            var sentence = higlightWord($inputText.text(), i);
-
+         var sentence = higlightWord($inputText.text(), i);
+      
             if (sentence !== $inputText.text()) {
                 i += 1;
             } else {
@@ -36,4 +64,5 @@ $(document).ready(function () {
     });
 });
 </script>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+</body>
+</html> 
